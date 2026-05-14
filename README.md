@@ -2,6 +2,7 @@
 
 > Mini plataforma fullstack de match entre candidatos e vagas tech, com algoritmo de compatibilidade **explicavel**.
 
+[![CI](https://github.com/R4ffz/projeto-dev-match/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/R4ffz/projeto-dev-match/actions/workflows/ci.yml)
 ![Java 21](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
 ![Spring Boot 3.4](https://img.shields.io/badge/Spring%20Boot-3.4-6DB33F?logo=spring&logoColor=white)
 ![React 18](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
