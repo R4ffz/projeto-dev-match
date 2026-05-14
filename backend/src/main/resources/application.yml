@@ -20,7 +20,7 @@ server:
 devmatch:
   security:
     jwt:
-      secret: ${JWT_SECRET:change-me-this-secret-must-be-at-least-32-bytes-long-please}
+      secret: ${JWT_SECRET}
       expiration-hours: 24
 
 springdoc:
