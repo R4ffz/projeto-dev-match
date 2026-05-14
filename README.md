@@ -335,7 +335,7 @@ Distribuicao:
 - [x] Vagas aparecem no frontend (12 vagas em grid responsivo)
 - [x] Match calculado e explicado (score 0-100 + matched/missing + breakdown por criterio + frase em PT-BR)
 - [x] Swagger UI abre corretamente em `/swagger-ui.html` com Bearer Auth configurado
-- [x] README com tecnologias, como rodar, endpoints, algoritmo de match e funcionalidades futuras
+- [x] README com tecnologias, como rodar, endpoints e algoritmo de match
 - [x] Testes unitarios principais com JUnit 5 + Mockito (31 testes verdes)
 - [x] Algoritmo de match coberto por testes (`MatchCalculatorTest` com 14 cenarios incluindo o exemplo do PDF)
 - [x] Sem secrets reais no repositorio (apenas `.env.example`; `.env` esta no `.gitignore`)
