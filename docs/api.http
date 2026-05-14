@@ -1,4 +1,4 @@
-### DevMatch API - Etapa 2 (Auth)
+### DevMatch API
 ### Use este arquivo com:
 ### - VS Code: extensao "REST Client" (humao.rest-client)
 ### - IntelliJ IDEA: HTTP Client embutido
@@ -73,8 +73,6 @@ GET {{host}}/api/profile/me
 ###
 # 7) Endpoint protegido COM token - autenticacao passa
 # Substitua <TOKEN> pelo valor retornado pelo /login acima.
-# Nesta etapa, /api/profile/me ainda nao foi implementado (Etapa 3), entao a resposta
-# sera 404, mas isso confirma que o filtro JWT validou o token corretamente.
 GET {{host}}/api/profile/me
 Authorization: Bearer <TOKEN>
 
@@ -89,7 +87,7 @@ GET {{host}}/actuator/health
 
 ###
 ### =========================================================
-### Etapa 3: Perfil do candidato + catalogo de skills
+### Perfil do candidato e catalogo de skills
 ### Substitua <TOKEN> nos exemplos abaixo pelo token do login.
 ### =========================================================
 
@@ -153,7 +151,7 @@ GET {{host}}/api/profile/me
 
 ###
 ### =========================================================
-### Etapa 4: Vagas + filtros
+### Vagas e filtros
 ### Substitua <TOKEN> nos exemplos abaixo pelo token do login.
 ### =========================================================
 
@@ -213,7 +211,7 @@ GET {{host}}/api/jobs
 
 ###
 ### =========================================================
-### Etapa 5: Algoritmo de match
+### Algoritmo de match
 ### Substitua <TOKEN> pelo token do login.
 ### Importante: para um score significativo, preencha o perfil via PUT /api/profile/me antes.
 ### =========================================================
