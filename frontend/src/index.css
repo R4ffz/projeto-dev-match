@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01', 'ss03';
+    color: theme('colors.slate.900');
+    background-color: theme('colors.white');
+  }
+
+  /* Numeros sempre tabulares para alinhamento (scores, salarios) */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  /* Selecao com cor da marca */
+  ::selection {
+    background-color: theme('colors.slate.900');
+    color: theme('colors.white');
+  }
+}
+
+@layer components {
+  /* Grid de pontos sutil para fundo de "preview" no AuthLayout */
+  .dot-grid {
+    background-image: radial-gradient(theme('colors.slate.200') 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}

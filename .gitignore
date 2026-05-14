@@ -1,0 +1,22 @@
+# Editor
+.idea/
+.vscode/
+.claude/
+*.iml
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+target/
+build/
+dist/
+node_modules/
+
+# Logs
+*.log
+
+# Local env (never commit secrets)
+.env

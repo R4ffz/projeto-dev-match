@@ -1,0 +1,259 @@
+### DevMatch API - Etapa 2 (Auth)
+### Use este arquivo com:
+### - VS Code: extensao "REST Client" (humao.rest-client)
+### - IntelliJ IDEA: HTTP Client embutido
+### - Importavel no Postman e Insomnia
+###
+### Para Postman/Insomnia (importacao):
+### 1. Copie um bloco "###" inteiro.
+### 2. Cole como "Raw text" no Postman ou via "Import > Clipboard" no Insomnia.
+
+@host = http://localhost:8080
+@email = rafael@example.com
+@password = senha12345
+
+###
+# 1) Register - cria um novo candidato e retorna JWT (HTTP 201)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Rafael Dev",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+# 2) Login - autentica e retorna JWT (HTTP 200)
+# Copie o "token" da resposta para usar nas chamadas autenticadas abaixo.
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+# 3) Register com payload invalido - validacao falha (HTTP 400)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "nao-eh-email",
+  "password": "123"
+}
+
+###
+# 4) Register com email ja cadastrado (HTTP 409)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Outro Nome",
+  "email": "{{email}}",
+  "password": "outrasenha123"
+}
+
+###
+# 5) Login com senha errada (HTTP 401)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "senha-errada"
+}
+
+###
+# 6) Endpoint protegido SEM token - retorna 401 com JSON
+GET {{host}}/api/profile/me
+
+###
+# 7) Endpoint protegido COM token - autenticacao passa
+# Substitua <TOKEN> pelo valor retornado pelo /login acima.
+# Nesta etapa, /api/profile/me ainda nao foi implementado (Etapa 3), entao a resposta
+# sera 404, mas isso confirma que o filtro JWT validou o token corretamente.
+GET {{host}}/api/profile/me
+Authorization: Bearer <TOKEN>
+
+###
+# 8) Health check publico (HTTP 200) - nao requer token
+GET {{host}}/actuator/health
+
+###
+# 9) Swagger UI - abra no navegador
+# http://localhost:8080/swagger-ui.html
+# Clique em "Authorize" e cole o token (sem o prefixo "Bearer ").
+
+###
+### =========================================================
+### Etapa 3: Perfil do candidato + catalogo de skills
+### Substitua <TOKEN> nos exemplos abaixo pelo token do login.
+### =========================================================
+
+###
+# 10) GET catalogo de skills (autenticado)
+# Use a resposta para escolher quais skills colocar no PUT /api/profile/me.
+GET {{host}}/api/skills
+Authorization: Bearer <TOKEN>
+
+###
+# 11) GET meu perfil - logo apos o register, vem com seniority/salary/workMode/summary nulos e skills vazias
+GET {{host}}/api/profile/me
+Authorization: Bearer <TOKEN>
+
+###
+# 12) PUT meu perfil - update completo (esperado: 200, perfil atualizado)
+PUT {{host}}/api/profile/me
+Authorization: Bearer <TOKEN>
+Content-Type: application/json
+
+{
+  "seniority": "JUNIOR",
+  "desiredSalary": 4000.00,
+  "preferredWorkMode": "REMOTE",
+  "professionalSummary": "Desenvolvedor backend Java com foco em Spring Boot e APIs REST.",
+  "skillNames": ["Java", "Spring Boot", "SQL", "React"]
+}
+
+###
+# 13) PUT com validacao falhando (esperado: 400)
+# desiredSalary negativo, seniority/workMode/skillNames nulos
+PUT {{host}}/api/profile/me
+Authorization: Bearer <TOKEN>
+Content-Type: application/json
+
+{
+  "seniority": null,
+  "desiredSalary": -100,
+  "preferredWorkMode": null,
+  "professionalSummary": "ok",
+  "skillNames": null
+}
+
+###
+# 14) PUT com skill desconhecida (esperado: 400)
+PUT {{host}}/api/profile/me
+Authorization: Bearer <TOKEN>
+Content-Type: application/json
+
+{
+  "seniority": "JUNIOR",
+  "desiredSalary": 4000.00,
+  "preferredWorkMode": "REMOTE",
+  "professionalSummary": "teste",
+  "skillNames": ["Java", "COBOL", "Visual Basic"]
+}
+
+###
+# 15) GET perfil sem token (esperado: 401)
+GET {{host}}/api/profile/me
+
+###
+### =========================================================
+### Etapa 4: Vagas + filtros
+### Substitua <TOKEN> nos exemplos abaixo pelo token do login.
+### =========================================================
+
+###
+# 16) GET todas as vagas (esperado: 200, 12 itens)
+GET {{host}}/api/jobs
+Authorization: Bearer <TOKEN>
+
+###
+# 17) GET vaga pelo id (esperado: 200)
+GET {{host}}/api/jobs/1
+Authorization: Bearer <TOKEN>
+
+###
+# 18) GET vaga inexistente (esperado: 404)
+GET {{host}}/api/jobs/9999
+Authorization: Bearer <TOKEN>
+
+###
+# 19) Filtro por senioridade (esperado: somente vagas JUNIOR)
+GET {{host}}/api/jobs?seniority=JUNIOR
+Authorization: Bearer <TOKEN>
+
+###
+# 20) Filtro por modalidade (esperado: somente REMOTE)
+GET {{host}}/api/jobs?workMode=REMOTE
+Authorization: Bearer <TOKEN>
+
+###
+# 21) Filtro por salario minimo (esperado: vagas com maxSalary >= 10000)
+GET {{host}}/api/jobs?minSalary=10000
+Authorization: Bearer <TOKEN>
+
+###
+# 22) Filtro por skill (esperado: somente vagas que exigem React)
+GET {{host}}/api/jobs?skill=React
+Authorization: Bearer <TOKEN>
+
+###
+# 23) Filtro por keyword (busca em titulo/empresa/descricao)
+GET {{host}}/api/jobs?keyword=fullstack
+Authorization: Bearer <TOKEN>
+
+###
+# 24) Combinacao de filtros: PLENO + REMOTE + Java + salario >= 6000
+GET {{host}}/api/jobs?seniority=MID_LEVEL&workMode=REMOTE&skill=Java&minSalary=6000
+Authorization: Bearer <TOKEN>
+
+###
+# 25) Filtro com enum invalido (esperado: 400 - parse error do Spring)
+GET {{host}}/api/jobs?seniority=ALIEN
+Authorization: Bearer <TOKEN>
+
+###
+# 26) GET /api/jobs sem token (esperado: 401)
+GET {{host}}/api/jobs
+
+###
+### =========================================================
+### Etapa 5: Algoritmo de match
+### Substitua <TOKEN> pelo token do login.
+### Importante: para um score significativo, preencha o perfil via PUT /api/profile/me antes.
+### =========================================================
+
+###
+# 27) Recomendacao: todas as vagas ordenadas por score desc
+GET {{host}}/api/jobs/recommended
+Authorization: Bearer <TOKEN>
+
+###
+# 28) Match detalhado para a vaga 1
+GET {{host}}/api/jobs/1/match
+Authorization: Bearer <TOKEN>
+
+###
+# 29) Match para vaga inexistente (esperado: 404)
+GET {{host}}/api/jobs/9999/match
+Authorization: Bearer <TOKEN>
+
+###
+# 30) Setup completo para reproduzir o exemplo do PDF (score 85)
+# 1) Faca um PUT em /api/profile/me com:
+#    seniority=JUNIOR, desiredSalary=4000, preferredWorkMode=REMOTE,
+#    skillNames=["Java","Spring Boot","SQL","React"]
+# 2) Chame GET /api/jobs/1/match (Desenvolvedor Java Junior, JUNIOR/REMOTE/3500-5000,
+#    skills exigidas: Java, Spring Boot, SQL, Git)
+# Esperado: skills 3/4=75, seniority=100, workMode=100, salary=100, finalScore=85
+PUT {{host}}/api/profile/me
+Authorization: Bearer <TOKEN>
+Content-Type: application/json
+
+{
+  "seniority": "JUNIOR",
+  "desiredSalary": 4000,
+  "preferredWorkMode": "REMOTE",
+  "professionalSummary": "Junior Java backend.",
+  "skillNames": ["Java", "Spring Boot", "SQL", "React"]
+}
+
+###
+# 31) Apos o PUT acima, este match deve retornar finalScore=85
+GET {{host}}/api/jobs/1/match
+Authorization: Bearer <TOKEN>
