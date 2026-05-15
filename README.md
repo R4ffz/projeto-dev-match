@@ -13,6 +13,16 @@
 
 ---
 
+## Acesse online
+
+Aplicacao publicada e funcionando em producao no Railway:
+
+- **Aplicacao** — https://frontend-production-3c43.up.railway.app
+- **API REST** — https://projeto-dev-match-production.up.railway.app
+- **Swagger UI** — https://projeto-dev-match-production.up.railway.app/swagger-ui.html
+
+Pode cadastrar uma conta de teste e explorar o fluxo completo: cadastro, preenchimento de perfil, listagem de vagas recomendadas e detalhe com match explicavel.
+
 ## Sobre
 
 DevMatch mostra ao candidato **quais vagas tech combinam com ele e por que** — sem caixa preta. Cada vaga vem com um score de 0 a 100 calculado a partir de skills (60%), senioridade (20%), modalidade (10%) e faixa salarial (10%), alem de mostrar as skills compativeis e as faltantes.
@@ -325,6 +335,75 @@ Distribuicao:
 | `AuthServiceTest` | 5 | Register, email duplicado, normalizacao, login OK, BadCredentials |
 | `ProfileServiceTest` | 5 | GET, PUT com skills validas, unknown skill, lista vazia, profile inexistente |
 | `JobServiceTest` | 3 | Search com ordenacao, findById, NotFound |
+
+## Producao e melhorias recentes
+
+Esta secao documenta o que foi adicionado depois da entrega inicial e que sustenta o ambiente de producao.
+
+### Deploy publico no Railway
+
+- Backend (Spring Boot), frontend (Vite + Nginx) e Postgres rodam em services separados no Railway
+- HTTPS automatico via Let's Encrypt nos dominios publicos
+- Schema do banco e seed aplicados automaticamente pelo backend na subida (Flyway + DataSeeder idempotente)
+- Variaveis sensiveis (`JWT_SECRET`, credenciais do banco, origens CORS, base URL da API no frontend) injetadas pelo painel do Railway — nenhuma fica versionada no repo
+- Redeploy automatico a cada push na `main` apos o CI ficar verde
+
+### Migracoes de schema (Flyway)
+
+Hibernate em `ddl-auto: validate` — apenas confere se o schema bate com as `@Entity` na subida; nao gera DDL automatico. Toda mudanca de schema vira uma migration versionada em [`backend/src/main/resources/db/migration/`](backend/src/main/resources/db/migration):
+
+| Versao | Descricao |
+|--------|-----------|
+| `V1__init.sql` | Schema inicial completo: `users`, `skills`, `candidate_profiles`, `profile_skills`, `jobs`, `job_skills`, com PKs IDENTITY, FKs e check constraints dos enums |
+| `V2__multi_work_modes.sql` | Extrai `preferred_work_mode` para a join table `candidate_profile_work_modes` (suporte a multiplas modalidades) |
+
+A cada deploy o Flyway aplica em ordem as migrations pendentes e registra em `flyway_schema_history`.
+
+### Seguranca em producao
+
+- **JWT_SECRET sem fallback** — sem default hardcoded; o backend falha rapido se a env nao for definida. Validacao adicional no `JwtService` garante chave de pelo menos 32 bytes (HS256).
+- **Rate limiting em endpoints de autenticacao**:
+  - `POST /api/auth/login`: 5 req/min/IP
+  - `POST /api/auth/register`: 3 req/hora/IP
+  - Filtro customizado com token bucket em memoria, sincronizado e com clock injetavel para teste
+  - Resposta `429 Too Many Requests` no padrao `ApiError` + header `Retry-After`
+- **CORS configuravel via env** (`CORS_ALLOWED_ORIGINS`) com suporte a multiplas origens separadas por virgula
+- **BCrypt** no hash de senhas, **HS256** com chave validada na inicializacao
+- `GlobalExceptionHandler` centraliza tratamento de erros e nao vaza stack traces nas respostas
+
+### Pipeline de CI (GitHub Actions)
+
+Workflow em [`.github/workflows/ci.yml`](.github/workflows/ci.yml) dispara em todo push e pull request, com dois jobs em paralelo:
+
+- **Backend** — Java 21 (Temurin), cache Maven, `mvn -B test`
+- **Frontend** — Node 20, cache npm, `npm ci` + `npm run build` (typecheck `tsc -b` + bundle Vite)
+
+Badge clicavel no topo deste README aponta diretamente para a aba Actions.
+
+### Perfil com multiplas modalidades aceitas
+
+O perfil aceita agora um conjunto de modalidades preferidas (`Set<WorkMode>`), refletindo melhor a realidade do candidato:
+
+- Mapeado via `@ElementCollection` na tabela `candidate_profile_work_modes`
+- Validacao: ao menos 1 modalidade obrigatoria (`@NotEmpty`)
+- Frontend renderiza chips multi-select no mesmo padrao visual da escolha de skills
+- Score de modalidade no algoritmo:
+  - Candidato contem a modalidade da vaga: `100`
+  - HYBRID presente no candidato ou na vaga: `50` (flexibilidade)
+  - Sem interseccao e sem HYBRID: `0`
+
+### Catalogo de skills e vagas expandido
+
+- **30 skills** no catalogo cobrindo o stack tipico do mercado tech BR:
+  - Linguagens: Java, Python, JavaScript, TypeScript, Go, C#, Kotlin
+  - Frontend: React, Next.js, Vue.js, Angular, Tailwind CSS
+  - Backend: Spring Boot, Node.js, .NET, Django
+  - Bancos: PostgreSQL, MySQL, MongoDB, Redis
+  - Infra: Docker, Kubernetes, AWS, Azure, GCP
+  - Versionamento e padroes: Git, JUnit, Hibernate, SQL, REST API
+- **24 vagas** no seed, cobrindo todas as 30 skills em pelo menos uma posicao
+- Distribuidas em estagiarios, juniores, plenos e seniors, com faixas salariais alinhadas ao mercado BR
+- DataSeeder continua idempotente — rodar varias vezes nao duplica registros
 
 ## Checklist de validacao
 
