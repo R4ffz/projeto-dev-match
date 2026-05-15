@@ -146,6 +146,46 @@ public class DataSeeder implements CommandLineRunner {
             Seniority.SENIOR, WorkMode.REMOTE, "14000", "20000",
             "Docker", "Kubernetes", "AWS", "Git", "PostgreSQL");
 
+        saveIfMissing(c, "Desenvolvedor Vue.js Pleno", "FrontHub",
+            "Construir SPAs em Vue.js 3 + TypeScript com Tailwind CSS, integrando com APIs REST de um produto B2B.",
+            Seniority.MID_LEVEL, WorkMode.REMOTE, "6500", "9500",
+            "JavaScript", "TypeScript", "Vue.js", "Tailwind CSS", "REST API");
+
+        saveIfMissing(c, "Desenvolvedor Angular Senior", "EnterpriseSoft",
+            "Liderar evolucao de aplicacao corporativa em Angular + TypeScript, com padroes de arquitetura e testes.",
+            Seniority.SENIOR, WorkMode.HYBRID, "12000", "17000",
+            "JavaScript", "TypeScript", "Angular", "REST API", "Git");
+
+        saveIfMissing(c, "Desenvolvedor Go Backend Pleno", "StreamLab",
+            "Construir servicos de alta concorrencia em Go com PostgreSQL e Docker para plataforma de streaming.",
+            Seniority.MID_LEVEL, WorkMode.REMOTE, "8500", "12500",
+            "Go", "PostgreSQL", "Docker", "REST API", "Git");
+
+        saveIfMissing(c, "Desenvolvedor .NET Senior", "NetSquare",
+            "Modernizar plataforma corporativa em C# / .NET 8, com SQL Server e deploy no Azure.",
+            Seniority.SENIOR, WorkMode.HYBRID, "13000", "18000",
+            "C#", ".NET", "SQL", "Azure", "Git");
+
+        saveIfMissing(c, "Desenvolvedor Backend Java/MySQL Junior", "LegacyHub",
+            "Apoiar evolucao de sistema legado em Java/Spring Boot com MySQL e migracao gradual de queries Hibernate.",
+            Seniority.JUNIOR, WorkMode.ONSITE, "4000", "6000",
+            "Java", "Spring Boot", "MySQL", "Hibernate", "REST API");
+
+        saveIfMissing(c, "Desenvolvedor Fullstack TypeScript Pleno", "RealTimeCo",
+            "Aplicacao realtime em Node.js + React/TypeScript, com cache distribuido em Redis e dados em MongoDB.",
+            Seniority.MID_LEVEL, WorkMode.REMOTE, "7500", "11000",
+            "TypeScript", "Node.js", "React", "MongoDB", "Redis", "REST API");
+
+        saveIfMissing(c, "Engenheiro Cloud GCP Senior", "CloudNative",
+            "Definir e operar plataforma em GCP usando Kubernetes (GKE), services em Go e PostgreSQL gerenciado.",
+            Seniority.SENIOR, WorkMode.REMOTE, "14000", "20000",
+            "GCP", "Kubernetes", "Docker", "Go", "PostgreSQL");
+
+        saveIfMissing(c, "Desenvolvedor Kotlin Backend Pleno", "JvmTech",
+            "Construir microservicos em Kotlin + Spring Boot com PostgreSQL e Docker, aproveitando recursos modernos da JVM.",
+            Seniority.MID_LEVEL, WorkMode.REMOTE, "8000", "12000",
+            "Kotlin", "Spring Boot", "PostgreSQL", "Hibernate", "REST API", "Docker");
+
         return (int) jobRepository.count() - before;
     }
 
