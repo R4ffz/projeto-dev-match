@@ -13,7 +13,7 @@ export interface ProfileResponse {
   email: string;
   seniority: Seniority | null;
   desiredSalary: number | null;
-  preferredWorkMode: WorkMode | null;
+  preferredWorkModes: WorkMode[];
   professionalSummary: string | null;
   skills: SkillResponse[];
 }
@@ -21,7 +21,7 @@ export interface ProfileResponse {
 export interface UpdateProfileRequest {
   seniority: Seniority;
   desiredSalary: number;
-  preferredWorkMode: WorkMode;
+  preferredWorkModes: WorkMode[];
   professionalSummary: string | null;
   skillNames: string[];
 }

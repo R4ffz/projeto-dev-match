@@ -66,7 +66,7 @@ class ProfileServiceTest {
         CandidateProfile profile = emptyProfile(1L);
         profile.setSeniority(Seniority.JUNIOR);
         profile.setDesiredSalary(new BigDecimal("4000"));
-        profile.setPreferredWorkMode(WorkMode.REMOTE);
+        profile.setPreferredWorkModes(new HashSet<>(Set.of(WorkMode.REMOTE)));
         profile.getSkills().add(skill("Java"));
 
         when(profileRepository.findByUser_Id(1L)).thenReturn(Optional.of(profile));
@@ -77,7 +77,7 @@ class ProfileServiceTest {
         assertEquals(1L, response.userId());
         assertEquals(Seniority.JUNIOR, response.seniority());
         assertEquals(new BigDecimal("4000"), response.desiredSalary());
-        assertEquals(WorkMode.REMOTE, response.preferredWorkMode());
+        assertEquals(Set.of(WorkMode.REMOTE), response.preferredWorkModes());
         assertEquals(1, response.skills().size());
         assertEquals("Java", response.skills().get(0).name());
     }
@@ -108,7 +108,7 @@ class ProfileServiceTest {
         UpdateProfileRequest req = new UpdateProfileRequest(
             Seniority.MID_LEVEL,
             new BigDecimal("8000"),
-            WorkMode.HYBRID,
+            Set.of(WorkMode.HYBRID, WorkMode.REMOTE),
             "Dev backend",
             List.of("Java", "Spring Boot")
         );
@@ -117,7 +117,7 @@ class ProfileServiceTest {
 
         assertEquals(Seniority.MID_LEVEL, response.seniority());
         assertEquals(new BigDecimal("8000"), response.desiredSalary());
-        assertEquals(WorkMode.HYBRID, response.preferredWorkMode());
+        assertEquals(Set.of(WorkMode.HYBRID, WorkMode.REMOTE), response.preferredWorkModes());
         assertEquals("Dev backend", response.professionalSummary());
         assertEquals(2, response.skills().size(), "skills antigas substituidas");
 
@@ -138,7 +138,7 @@ class ProfileServiceTest {
         UpdateProfileRequest req = new UpdateProfileRequest(
             Seniority.JUNIOR,
             new BigDecimal("4000"),
-            WorkMode.REMOTE,
+            Set.of(WorkMode.REMOTE),
             null,
             List.of("Java", "COBOL", "Visual Basic")
         );
@@ -162,7 +162,7 @@ class ProfileServiceTest {
         UpdateProfileRequest req = new UpdateProfileRequest(
             Seniority.SENIOR,
             new BigDecimal("12000"),
-            WorkMode.REMOTE,
+            Set.of(WorkMode.REMOTE),
             null,
             List.of()
         );

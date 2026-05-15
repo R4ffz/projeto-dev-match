@@ -2,7 +2,9 @@ package com.devmatch.profile;
 
 import com.devmatch.skill.Skill;
 import com.devmatch.user.User;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -44,9 +46,14 @@ public class CandidateProfile {
     @Column(name = "desired_salary", precision = 12, scale = 2)
     private BigDecimal desiredSalary;
 
+    @ElementCollection(targetClass = WorkMode.class, fetch = FetchType.LAZY)
+    @CollectionTable(
+        name = "candidate_profile_work_modes",
+        joinColumns = @JoinColumn(name = "profile_id")
+    )
     @Enumerated(EnumType.STRING)
-    @Column(name = "preferred_work_mode")
-    private WorkMode preferredWorkMode;
+    @Column(name = "work_mode", nullable = false)
+    private Set<WorkMode> preferredWorkModes = new HashSet<>();
 
     @Column(name = "professional_summary", length = 2000)
     private String professionalSummary;

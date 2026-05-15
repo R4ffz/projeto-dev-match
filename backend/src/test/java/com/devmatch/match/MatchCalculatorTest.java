@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -113,6 +114,39 @@ class MatchCalculatorTest {
     void modalidadeIncompativel() {
         CandidateProfile profile = profile(Seniority.MID_LEVEL, "8000", WorkMode.REMOTE, "Java");
         Job job = job(1L, Seniority.MID_LEVEL, WorkMode.ONSITE, "7000", "9000", "Java");
+
+        MatchResult r = MatchCalculator.calculate(profile, job);
+        assertEquals(0, r.workModeScore());
+    }
+
+    @Test
+    @DisplayName("Multi modalidade: candidato aceita REMOTE+HYBRID e vaga eh REMOTE -> workModeScore = 100")
+    void modalidadeMultiContemVaga() {
+        CandidateProfile profile = profile(Seniority.MID_LEVEL, "8000",
+            Set.of(WorkMode.REMOTE, WorkMode.HYBRID), "Java");
+        Job job = job(1L, Seniority.MID_LEVEL, WorkMode.REMOTE, "7000", "9000", "Java");
+
+        MatchResult r = MatchCalculator.calculate(profile, job);
+        assertEquals(100, r.workModeScore());
+    }
+
+    @Test
+    @DisplayName("Multi modalidade: candidato aceita REMOTE+HYBRID e vaga eh ONSITE -> 50 via HYBRID no candidato")
+    void modalidadeMultiAlternativaPorHybrid() {
+        CandidateProfile profile = profile(Seniority.MID_LEVEL, "8000",
+            Set.of(WorkMode.REMOTE, WorkMode.HYBRID), "Java");
+        Job job = job(1L, Seniority.MID_LEVEL, WorkMode.ONSITE, "7000", "9000", "Java");
+
+        MatchResult r = MatchCalculator.calculate(profile, job);
+        assertEquals(50, r.workModeScore());
+    }
+
+    @Test
+    @DisplayName("Modalidades vazias (candidato nao declarou preferencia) -> workModeScore = 0")
+    void modalidadeVazia() {
+        CandidateProfile profile = profile(Seniority.MID_LEVEL, "8000",
+            new HashSet<>(), "Java");
+        Job job = job(1L, Seniority.MID_LEVEL, WorkMode.REMOTE, "7000", "9000", "Java");
 
         MatchResult r = MatchCalculator.calculate(profile, job);
         assertEquals(0, r.workModeScore());
@@ -222,11 +256,15 @@ class MatchCalculatorTest {
     private static final AtomicLong SKILL_ID_SEQ = new AtomicLong(1000);
 
     private static CandidateProfile profile(Seniority sen, String desiredSalary, WorkMode wm, String... skillNames) {
+        return profile(sen, desiredSalary, new HashSet<>(Set.of(wm)), skillNames);
+    }
+
+    private static CandidateProfile profile(Seniority sen, String desiredSalary, Set<WorkMode> wms, String... skillNames) {
         CandidateProfile p = new CandidateProfile();
         p.setUser(user(1L));
         p.setSeniority(sen);
         p.setDesiredSalary(new BigDecimal(desiredSalary));
-        p.setPreferredWorkMode(wm);
+        p.setPreferredWorkModes(new HashSet<>(wms));
         p.setSkills(skillSet(skillNames));
         return p;
     }
