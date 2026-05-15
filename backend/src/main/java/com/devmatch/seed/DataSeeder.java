@@ -25,8 +25,15 @@ import java.util.Set;
 public class DataSeeder implements CommandLineRunner {
 
     private static final List<String> CATALOG = List.of(
-        "Java", "Spring Boot", "SQL", "PostgreSQL", "React",
-        "Docker", "Git", "AWS", "Hibernate", "JUnit"
+        "Java", "Spring Boot", "Hibernate", "JUnit",
+        "Python", "Django",
+        "JavaScript", "TypeScript", "Node.js",
+        "React", "Next.js", "Vue.js", "Angular", "Tailwind CSS",
+        "Go", "Kotlin", "C#", ".NET",
+        "SQL", "PostgreSQL", "MySQL", "MongoDB", "Redis",
+        "Docker", "Kubernetes",
+        "AWS", "Azure", "GCP",
+        "Git", "REST API"
     );
 
     private final SkillRepository skillRepository;
@@ -118,6 +125,26 @@ public class DataSeeder implements CommandLineRunner {
             "Apoiar a equipe fullstack em pequenas tarefas de Java, React, testes manuais e documentacao tecnica.",
             Seniority.INTERN, WorkMode.ONSITE, "1800", "2800",
             "Java", "React", "Git");
+
+        saveIfMissing(c, "Desenvolvedor Frontend React/Next.js Pleno", "Mosaic",
+            "Construir interfaces modernas com Next.js, React e Tailwind, integrando com APIs REST e otimizando performance.",
+            Seniority.MID_LEVEL, WorkMode.REMOTE, "7000", "11000",
+            "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS", "REST API");
+
+        saveIfMissing(c, "Desenvolvedor Python Backend Pleno", "DataLab",
+            "Desenvolver microservicos em Python/Django e pipelines de dados com PostgreSQL e Docker.",
+            Seniority.MID_LEVEL, WorkMode.HYBRID, "7500", "11000",
+            "Python", "Django", "PostgreSQL", "Docker", "Git", "REST API");
+
+        saveIfMissing(c, "Desenvolvedor Fullstack Node.js Pleno", "ConsumerHub",
+            "Atuar em aplicacao SaaS com Node.js, TypeScript, React e MongoDB; cultura de testes e code review.",
+            Seniority.MID_LEVEL, WorkMode.REMOTE, "7000", "10000",
+            "JavaScript", "TypeScript", "Node.js", "React", "MongoDB", "REST API");
+
+        saveIfMissing(c, "DevOps/SRE Senior", "SkyOps",
+            "Definir e operar plataforma Kubernetes em AWS, automacao de CI/CD, observabilidade e cost optimization.",
+            Seniority.SENIOR, WorkMode.REMOTE, "14000", "20000",
+            "Docker", "Kubernetes", "AWS", "Git", "PostgreSQL");
 
         return (int) jobRepository.count() - before;
     }
