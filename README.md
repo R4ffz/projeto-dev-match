@@ -17,9 +17,7 @@
 
 Aplicacao publicada e funcionando em producao no Railway:
 
-- **Aplicacao** — https://frontend-production-3c43.up.railway.app
-- **API REST** — https://projeto-dev-match-production.up.railway.app
-- **Swagger UI** — https://projeto-dev-match-production.up.railway.app/swagger-ui.html
+**https://frontend-production-3c43.up.railway.app**
 
 Pode cadastrar uma conta de teste e explorar o fluxo completo: cadastro, preenchimento de perfil, listagem de vagas recomendadas e detalhe com match explicavel.
 
