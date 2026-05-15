@@ -40,10 +40,12 @@ public class ProfileService {
 
         profile.setSeniority(request.seniority());
         profile.setDesiredSalary(request.desiredSalary());
-        profile.setPreferredWorkMode(request.preferredWorkMode());
         profile.setProfessionalSummary(
             request.professionalSummary() == null ? null : request.professionalSummary().trim()
         );
+
+        profile.getPreferredWorkModes().clear();
+        profile.getPreferredWorkModes().addAll(request.preferredWorkModes());
 
         profile.getSkills().clear();
         profile.getSkills().addAll(resolved);
@@ -89,7 +91,7 @@ public class ProfileService {
             user.getEmail(),
             profile.getSeniority(),
             profile.getDesiredSalary(),
-            profile.getPreferredWorkMode(),
+            new java.util.HashSet<>(profile.getPreferredWorkModes()),
             profile.getProfessionalSummary(),
             skills
         );

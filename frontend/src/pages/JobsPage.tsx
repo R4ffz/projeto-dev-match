@@ -123,7 +123,7 @@ export function JobsPage() {
   const isProfileIncomplete =
     profile !== null &&
     (profile.seniority === null ||
-      profile.preferredWorkMode === null ||
+      profile.preferredWorkModes.length === 0 ||
       profile.desiredSalary === null);
 
   return (

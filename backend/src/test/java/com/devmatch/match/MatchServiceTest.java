@@ -20,9 +20,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -63,7 +65,7 @@ class MatchServiceTest {
         p.setUser(user(userId));
         p.setSeniority(sen);
         p.setDesiredSalary(new BigDecimal(desiredSalary));
-        p.setPreferredWorkMode(wm);
+        p.setPreferredWorkModes(new HashSet<>(Set.of(wm)));
         Set<Skill> set = new LinkedHashSet<>();
         for (String n : skillNames) set.add(skill(n));
         p.setSkills(set);

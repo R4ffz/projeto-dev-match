@@ -34,7 +34,7 @@ public final class MatchCalculator {
     public static MatchResult calculate(CandidateProfile profile, Job job) {
         SkillsBreakdown sb = scoreSkills(profile.getSkills(), job.getSkills());
         int seniorityScore = scoreSeniority(profile.getSeniority(), job.getSeniority());
-        int workModeScore = scoreWorkMode(profile.getPreferredWorkMode(), job.getWorkMode());
+        int workModeScore = scoreWorkMode(profile.getPreferredWorkModes(), job.getWorkMode());
         int salaryScore = scoreSalary(profile.getDesiredSalary(), job.getMinSalary(), job.getMaxSalary());
 
         int finalScore = (int) Math.round(
@@ -97,11 +97,13 @@ public final class MatchCalculator {
     }
 
     // ---------- WorkMode: 10% ----------
-    // igual -> 100; HYBRID em qualquer lado -> 50; REMOTE x ONSITE -> 0
-    private static int scoreWorkMode(WorkMode candidate, WorkMode job) {
-        if (candidate == null || job == null) return 0;
-        if (candidate == job) return 100;
-        if (candidate == WorkMode.HYBRID || job == WorkMode.HYBRID) return 50;
+    // candidato contem a modalidade da vaga -> 100;
+    // HYBRID em qualquer lado (candidato ou vaga) -> 50 (flexibilidade);
+    // sem interseccao e sem HYBRID -> 0.
+    private static int scoreWorkMode(Set<WorkMode> candidate, WorkMode job) {
+        if (candidate == null || candidate.isEmpty() || job == null) return 0;
+        if (candidate.contains(job)) return 100;
+        if (candidate.contains(WorkMode.HYBRID) || job == WorkMode.HYBRID) return 50;
         return 0;
     }
 
